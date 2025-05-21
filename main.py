@@ -285,7 +285,7 @@ def times():
             # Mostrar estadísticas
             st.subheader("Estadísticas de Tiempos")
 
-            # Función de conversión mejorada (MM:SS.sss)
+
             def format_laptime(seconds):
                 if pd.isna(seconds):
                     return ""
@@ -308,8 +308,8 @@ def times():
             # Mostrar tabla formateada
             st.dataframe(
                 stats[['Promedio', 'Mejor', 'Peor', 'vs Promedio', 'Desviación']].style.format({
-                    'Desviación': '{:.3f}s',  # La desviación se mantiene en segundos
-                    'vs Promedio (s)': '{:+.3f}'  # Columna oculta con el valor numérico
+                    'Desviación': '{:.3f}s',  
+                    'vs Promedio (s)': '{:+.3f}' 
                 })
             )
 
@@ -326,8 +326,7 @@ def tyres_individual():
                 StartLap='min',
                 EndLap='max'
             ).reset_index()
-            
-            # Crear gráfico con Altair
+
             chart = alt.Chart(stints).mark_bar().encode(
                 y=alt.Y('Driver:N', 
                         title='Piloto',
@@ -344,11 +343,11 @@ def tyres_individual():
             ).properties(
                 title=f'Estrategias de neumáticos - {country} {year}',
                 width=800,
-                height=alt.Step(30)  # Altura de cada barra
+                height=alt.Step(30)  
             ).configure_axis(
                 grid=False
             ).configure_view(
-                strokeWidth=0  # Sin borde
+                strokeWidth=0  
             )
             
             # Mostrar gráfico
@@ -465,13 +464,13 @@ def weather():
             chart_combined = alt.layer(
                 base.mark_line(color='blue', point=False).encode(
                     y=alt.Y('AirTemp:Q', title='Temperatura (°C)', scale=alt.Scale(zero=False)),
-                    color=alt.value('blue'),  # Color fijo para AirTemp
+                    color=alt.value('blue'),  
                     opacity=alt.value(0.7)
                 ).transform_filter(alt.datum.AirTemp).properties(name='AirTemp'),  # Filtro opcional para datos válidos
 
                 base.mark_line(color='red', point=False).encode(
                     y=alt.Y('TrackTemp:Q'),
-                    color=alt.value('red'),  # Color fijo para TrackTemp
+                    color=alt.value('red'), 
                     opacity=alt.value(0.7)
                 ).transform_filter(alt.datum.TrackTemp).properties(name='TrackTemp')
             ).properties(
@@ -480,7 +479,6 @@ def weather():
                 height=300
             ).interactive()
 
-            # Leyenda manual (opcional, si Altair no la genera automáticamente)
             legend = alt.Chart(pd.DataFrame({
                 'Variable': ['AirTemp', 'TrackTemp'],
                 'Color': ['blue', 'red']
@@ -489,12 +487,11 @@ def weather():
                 color=alt.Color('Color:N', scale=None)
             ).properties(title='Leyenda')
 
-            # Mostrar gráfico y leyenda (en fila o columna)
             st.altair_chart(alt.hconcat(chart_combined, legend), use_container_width=True)
 
 def rotate(xy, *, angle):
-    if None in xy or np.isnan(xy).any():  # Verifica nulos o NaN
-        return np.array([np.nan, np.nan])  # Devuelve valores inválidos
+    if None in xy or np.isnan(xy).any():  
+        return np.array([np.nan, np.nan])  
     rot_mat = np.array([
         [np.cos(angle), np.sin(angle)],
         [-np.sin(angle), np.cos(angle)]
@@ -515,19 +512,17 @@ def track():
 
         with st.spinner('Cargando datos del circuito...'):
             session = get_session(year, location)
-            session.load(telemetry=False, weather=False)  # Solo cargar datos básicos
+            session.load(telemetry=False, weather=False)  
             
-            # Obtener vuelta más rápida y limpiar datos
+
             lap = session.laps.pick_fastest()
             st.write("Vuelta rápida")
             st.write(lap['LapTime'])
 
             pos = lap.get_pos_data()
             
-
-            # Antes de rotar las coordenadas, filtra valores nulos
             pos = lap.get_pos_data()
-            pos = pos.dropna(subset=['X', 'Y'])  # Elimina filas con X o Y nulos
+            pos = pos.dropna(subset=['X', 'Y'])  
 
             if pos.empty:
                 st.warning("No hay datos de posición válidos para dibujar el circuito.")
@@ -660,8 +655,7 @@ def tyres_parrilla():
         StartLap='min',
         EndLap='max'
     ).reset_index()
-    
-    # Crear gráfico con Altair
+
     chart = alt.Chart(stints).mark_bar().encode(
         y=alt.Y('Driver:N', 
                 title='Piloto',
@@ -678,11 +672,11 @@ def tyres_parrilla():
     ).properties(
         title=f'Estrategias de neumáticos - {country} {year}',
         width=800,
-        height=alt.Step(30)  # Altura de cada barra
+        height=alt.Step(30)  
     ).configure_axis(
         grid=False
     ).configure_view(
-        strokeWidth=0  # Sin borde
+        strokeWidth=0  
     )
     
     # Mostrar gráfico
